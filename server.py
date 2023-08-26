@@ -1,7 +1,18 @@
 from socket import *
+import pymongo
 
-#Json formatado com as opções
+  # Conectar-se ao servidor MongoDB (localhost, porta padrão 27017)
+try:
+  client = pymongo.MongoClient("mongodb://localhost:27017/")
+  # Acessar um banco de dados
+  db = client["test"]
+  # Acessar uma coleção
+  users = db["users"]
+  print('Conectado com sucesso!')
+except Exception as e:
+  print("Ocorreu um erro ao conectar com o bando de dados!")
 
+#Json formatado com as perguntas
 questions = {
   "pergunta1" : "Qual é a capital de são Paulo? \n",
   "options1":{
@@ -27,7 +38,6 @@ questions = {
   "4 - ": "Brasilia \n",  
   }
 }
-users = {}
 respostas = ['1','2','3']
 
 # Porta do servidor  
@@ -81,7 +91,12 @@ while True:
       contagem = contagem
 
 
-  users.update({"nome": nome, "pontos": contagem})
-  print(users)
+  users.insert_one({"nome": nome, "pontos": contagem})
+  print("Pontos de cada usuario: ")
+  usersList = users.find()
+
+  for user in usersList:
+    print("Nome: ", user["nome"]  ," Postos: ", user["pontos"])
+
   # Fecha a conexão
   connectionSocket.close()

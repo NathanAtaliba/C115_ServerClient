@@ -13,9 +13,10 @@ print('Conectado em {}, {}'.format(serverPort, serverName))
 
 nameMessage = clientSocket.recv(1024).decode()
 name = input("Nome: ")
-clientSocket.send(nameMessage.encode())
+clientSocket.send(name.encode())
 
 # Recebendo a mensagem do servidor com as opções e enviando a opção do cliente
+print("Primeira Questao: ")
 message1 = clientSocket.recv(1024).decode()
 print(message1)
 option1 = input("Opção: ")
@@ -37,9 +38,6 @@ print(message3)
 option3 = input("Opção: ")
 print("")
 clientSocket.send(option3.encode())
-
-#message = clientSocket.recv(1024).decode()
-#print(message)
 
 # Fechando a conexão
 clientSocket.close()
