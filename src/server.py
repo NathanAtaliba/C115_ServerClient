@@ -5,9 +5,9 @@ import pymongo
 try:
   client = pymongo.MongoClient("mongodb://localhost:27017/")
   # Acessar um banco de dados
-  db = client["test"]
+  db = client["Banco_Dados"]
   # Acessar uma coleção
-  users = db["users"]
+  users = db["Banco_Dados"]
   questions = db["questions"]
   print('Conectado com sucesso!')
 except Exception as e:
@@ -97,13 +97,9 @@ while True:
       contagemErro = contagemErro + 1
 
   users.insert_one({"nome": nome, "Acertos": str(contagemAcerto),"Erros":  str(contagemErro)})
-  print("Usuarios: ")
   usersList = users.find()
-
   usuarios_str = "\n".join([f"Nome: {user['nome']}, Acertos: {user['Acertos']}, Erros: {user['Erros']}" for user in usersList])
   connectionSocket.send(usuarios_str.encode())
-  for user in usersList:
-    print("Nome: ", user["nome"]  ," Acertos: ", user["Acertos"]," Erros: ", user["Erros"])
   
   # Fecha a conexão
   connectionSocket.close()
