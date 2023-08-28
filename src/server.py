@@ -8,6 +8,7 @@ try:
   db = client["test"]
   # Acessar uma coleção
   users = db["users"]
+  questions = db["questions"]
   print('Conectado com sucesso!')
 except Exception as e:
   print("Ocorreu um erro ao conectar com o bando de dados!")
@@ -38,8 +39,8 @@ questions = {
   "4 - ": "Brasilia \n",  
   }
 }
-respostas = ['1','2','3']
 
+respostas = ['1','2','3']
 # Porta do servidor  
 serverPort = 5000
 # Criando um socket com uma determinada familia e tipo
@@ -53,13 +54,15 @@ serverSocket.settimeout(1000)
 
 print("Server is ready")
 
+
 while True:
   # Aceita a conexão
   connectionSocket, addr = serverSocket.accept()
-
+  
   # Pegando o nome do usuario
   connectionSocket.send(("Entre com seu nome: ").encode())
   nome = connectionSocket.recv(1024).decode()
+
 
   # Envia a primeira questao e recebe a resposta do cliente
   connectionSocket.send(questions["pergunta1"].encode())
@@ -81,22 +84,26 @@ while True:
   connectionSocket.send(questions["options3"]["2 - "].encode())
   connectionSocket.send(questions["options3"]["3 - "].encode())
   escolha3 = connectionSocket.recv(1024).decode()
-
+  
   escolhas = [escolha1, escolha2, escolha3]
-  contagem = 0
+  contagemAcerto = 0
+  contagemErro = 0
   for escolha in range(0, len(escolhas)):
     if escolhas[escolha] == respostas[escolha]:
-      contagem = contagem + 1
+      contagemAcerto = contagemAcerto + 1
+      contagemErro = contagemErro
     else:
-      contagem = contagem
+      contagemAcerto = contagemAcerto
+      contagemErro = contagemErro + 1
 
-
-  users.insert_one({"nome": nome, "pontos": contagem})
-  print("Pontos de cada usuario: ")
+  users.insert_one({"nome": nome, "Acertos": str(contagemAcerto),"Erros":  str(contagemErro)})
+  print("Usuarios: ")
   usersList = users.find()
 
+  usuarios_str = "\n".join([f"Nome: {user['nome']}, Acertos: {user['Acertos']}, Erros: {user['Erros']}" for user in usersList])
+  connectionSocket.send(usuarios_str.encode())
   for user in usersList:
-    print("Nome: ", user["nome"]  ," Postos: ", user["pontos"])
-
+    print("Nome: ", user["nome"]  ," Acertos: ", user["Acertos"]," Erros: ", user["Erros"])
+  
   # Fecha a conexão
   connectionSocket.close()
