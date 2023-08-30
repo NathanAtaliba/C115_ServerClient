@@ -5,14 +5,16 @@ import pymongo
 try:
   client = pymongo.MongoClient("mongodb://localhost:27017/")
   # Acessar um banco de dados
-  db = client["Banco_Dados"]
+  db = client["test"]
   # Acessar uma coleção
-  users = db["Banco_Dados"]
-  questions = db["questions"]
+  users = db["users"]
+  questionsCollection = db["questions"]
+
   print('Conectado com sucesso!')
 except Exception as e:
   print("Ocorreu um erro ao conectar com o bando de dados!")
 
+'''
 #Json formatado com as perguntas
 questions = {
   "pergunta1" : "Qual é a capital de são Paulo? \n",
@@ -39,7 +41,7 @@ questions = {
   "4 - ": "Brasilia \n",  
   }
 }
-
+'''
 respostas = ['1','2','3']
 # Porta do servidor  
 serverPort = 5000
@@ -53,36 +55,39 @@ serverSocket.listen(1)
 serverSocket.settimeout(1000)
 
 print("Server is ready")
+#Preparando a mensagem com questoes para serem vn
+questions = questionsCollection.find()
 
-
+for line in questions:
+  perguntas = line["perguntas"]
+  options = line["options"]
 while True:
   # Aceita a conexão
   connectionSocket, addr = serverSocket.accept()
-  
+
   # Pegando o nome do usuario
   connectionSocket.send(("Entre com seu nome: ").encode())
   nome = connectionSocket.recv(1024).decode()
 
-
   # Envia a primeira questao e recebe a resposta do cliente
-  connectionSocket.send(questions["pergunta1"].encode())
-  connectionSocket.send(questions["options1"]["1 - "].encode())
-  connectionSocket.send(questions["options1"]["2 - "].encode())
-  connectionSocket.send(questions["options1"]["3 - "].encode())
+  connectionSocket.send(perguntas[0].encode())
+  for i in range(0,4):
+    connectionSocket.send(options[i].encode())
+
   escolha1 = connectionSocket.recv(1024).decode()
 
   # Envia a segunda questao e recebe a resposta do cliente
-  connectionSocket.send(questions["pergunta2"].encode())
-  connectionSocket.send(questions["options2"]["1 - "].encode())
-  connectionSocket.send(questions["options2"]["2 - "].encode())
-  connectionSocket.send(questions["options2"]["3 - "].encode())
+  connectionSocket.send(perguntas[1].encode())
+  for i in range(0,4):
+    connectionSocket.send(options[i].encode())
+
   escolha2 = connectionSocket.recv(1024).decode()
 
   # Envia a terceira questao e recebe a resposta do cliente
-  connectionSocket.send(questions["pergunta3"].encode())
-  connectionSocket.send(questions["options3"]["1 - "].encode())
-  connectionSocket.send(questions["options3"]["2 - "].encode())
-  connectionSocket.send(questions["options3"]["3 - "].encode())
+  connectionSocket.send(perguntas[2].encode())
+  for i in range(0,4):
+    connectionSocket.send(options[i].encode())
+
   escolha3 = connectionSocket.recv(1024).decode()
   
   escolhas = [escolha1, escolha2, escolha3]
@@ -96,6 +101,7 @@ while True:
       contagemAcerto = contagemAcerto
       contagemErro = contagemErro + 1
 
+  print("")
   users.insert_one({"nome": nome, "Acertos": str(contagemAcerto),"Erros":  str(contagemErro)})
   usersList = users.find()
   usuarios_str = "\n".join([f"Nome: {user['nome']}, Acertos: {user['Acertos']}, Erros: {user['Erros']}" for user in usersList])

@@ -1,0 +1,4 @@
+{
+    "perguntas" : [ "1. Qual é a capital de são Paulo? \n", "2. Qual é a capital de Rio de Janeiro? \n", "3. Qual é a capital de Minas gerais? \n" ],
+    "options":[ "1)São Paulo \n", "2)Rio de janeiro \n", "3)Belo Horizonte \n", "4)Brasilia \n" ]
+}  
