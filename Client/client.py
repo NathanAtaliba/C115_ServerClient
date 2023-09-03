@@ -3,7 +3,7 @@ from socket import *
 # Endereço do servidor
 serverName = 'localhost'
 # Porta do servidor
-serverPort = 5000
+serverPort = 8000
 
 # Criando um socket com uma determinada familia e tipo
 clientSocket = socket(AF_INET, SOCK_STREAM)

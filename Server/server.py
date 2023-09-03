@@ -9,42 +9,12 @@ try:
   # Acessar uma coleção
   users = db["users"]
   questionsCollection = db["questions"]
-
   print('Conectado com sucesso!')
 except Exception as e:
   print("Ocorreu um erro ao conectar com o bando de dados!")
 
-'''
-#Json formatado com as perguntas
-questions = {
-  "pergunta1" : "Qual é a capital de são Paulo? \n",
-  "options1":{
-  "1 - ": "São Paulo \n",
-  "2 - ": "Rio de janeiro \n",
-  "3 - ": "Belo Horizonte \n",
-  "4 - ": "Brasilia \n", 
-  },
-
-  "pergunta2" : "Qual é a capital de Rio de Janeiro? \n",
-  "options2":{
-  "1 - ": "São Paulo \n",
-  "2 - ": "Rio de janeiro \n",
-  "3 - ": "Belo Horizonte \n",
-  "4 - ": "Brasilia \n",
-  },
-
-  "pergunta3" : "Qual é a capital de Minas gerais? \n",
-  "options3":{
-  "1 - ": "São Paulo \n",
-  "2 - ": "Rio de janeiro \n",
-  "3 - ": "Belo Horizonte \n",
-  "4 - ": "Brasilia \n",  
-  }
-}
-'''
-respostas = ['1','2','3']
 # Porta do servidor  
-serverPort = 5000
+serverPort = 8000
 # Criando um socket com uma determinada familia e tipo
 serverSocket = socket(AF_INET, SOCK_STREAM)
 # Associando o servidor a um determinado endereço e porta
@@ -61,6 +31,7 @@ questions = questionsCollection.find()
 for line in questions:
   perguntas = line["perguntas"]
   options = line["options"]
+  respostas = line["respostas"]
 while True:
   # Aceita a conexão
   connectionSocket, addr = serverSocket.accept()
